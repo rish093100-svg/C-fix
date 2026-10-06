@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CivicConnect - Community Feed</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+
+  <!-- Navbar -->
+  <nav class="bg-white shadow-md sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
+      <!--<h1 class="text-xl font-bold text-blue-600">CivicConnect</h1>-->
+      <button class="text-xl font-bold text-blue-600">CivicConnect</button>
+      <ul class="flex space-x-6">
+        <li><a href="index.html" class="text-blue-600 font-semibold">Community Feed</a></li>
+        <li><a href="report.html" class="hover:text-blue-600">Report Issue</a></li>
+        <li><a href="dashboard.html" class="hover:text-blue-600">Impact Dashboard</a></li>
+        <li><a href="success.html" class="hover:text-blue-600">Success Stories</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Search + Filters -->
+  <div class="max-w-5xl mx-auto mt-6 px-4">
+    <input type="text" placeholder="Search issues by location, category..." 
+           class="w-full px-4 py-2 rounded-lg border border-gray-300 shadow-sm">
+    <div class="flex flex-wrap gap-2 mt-4">
+      <button class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full">All Issues</button>
+      <button class="bg-gray-200 px-3 py-1 rounded-full">Trending</button>
+      <button class="bg-gray-200 px-3 py-1 rounded-full">Infrastructure</button>
+      <button class="bg-gray-200 px-3 py-1 rounded-full">Environment</button>
+      <button class="bg-gray-200 px-3 py-1 rounded-full">Safety</button>
+    </div>
+  </div>
+
+  <!-- Feed -->
+  <div class="max-w-5xl mx-auto mt-6 px-4 space-y-6">
+
+    <!-- Post Card -->
+    <div class="bg-white p-5 rounded-lg shadow">
+      <div class="flex items-center mb-3">
+        <img src="https://i.pravatar.cc/40" class="w-10 h-10 rounded-full mr-3">
+        <div>
+          <h4 class="font-semibold">Maria Gonzalez</h4>
+          <p class="text-gray-500 text-sm">Community Center • 8h ago</p>
+        </div>
+      </div>
+      <h3 class="font-bold text-lg mb-1">Graffiti vandalism on community center building</h3>
+      <p class="text-gray-600 mb-3">
+        The east wall of the community center has been tagged with graffiti overnight...
+      </p>
+      <img src="https://imgs.search.brave.com/N3mN6CTkmvO4LuongHDH469_igpe9DXkfzU33vl__bo/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9oNy5h/bGFteS5jb20vY29t/cC9IV0pSUkgvc3Vi/c3VyZmFjZS1kcmFp/bmFnZS1zeXN0ZW0t/aW4tYW4tYWdyaWN1/bHR1cmFsLWZpZWxk/LXdhdGVyLWZsb3dp/bmctSFdKUlJILmpw/Zw" class="rounded-lg mb-3 w-full" class="rounded-lg mb-3 w-full">
+      <div class="flex justify-between text-sm text-gray-600">
+        <span class="bg-gray-100 px-2 py-1 rounded">#GraffitiRemoval</span>
+        <span class="text-blue-600 font-semibold">Reported</span>
+      </div>
+    </div>
+
+    <!-- Add more post cards here -->
+
+  </div>
+
+</body>
+</html>

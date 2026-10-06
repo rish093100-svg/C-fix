@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report Community Issue</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            max-width: 1000px;
+            width: 100%;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        header {
+            background: #3498db;
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+        
+        header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .progress-container {
+            display: flex;
+            justify-content: space-between;
+            margin: 30px 20px;
+            position: relative;
+        }
+        
+        .progress-bar {
+            position: absolute;
+            height: 4px;
+            background: #e0e0e0;
+            width: 100%;
+            top: 50%;
+            transform: translateY(-50%);
+            left: 0;
+            z-index: 1;
+        }
+        
+        .progress-fill {
+            position: absolute;
+            height: 4px;
+            background: #3498db;
+            top: 50%;
+            transform: translateY(-50%);
+            left: 0;
+            transition: width 0.3s ease;
+            z-index: 2;
+            width: 0%;
+        }
+        
+        .progress-step {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #fff;
+            border: 3px solid #bdc3c7;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #7f8c8d;
+            position: relative;
+            z-index: 3;
+        }
+        
+        .progress-step.active {
+            border-color: #3498db;
+            color: #3498db;
+            background: #eaf2f8;
+        }
+        
+        .step-label {
+            position: absolute;
+            top: 45px;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            font-size: 0.85rem;
+            color: #7f8c8d;
+            font-weight: 500;
+        }
+        
+        .progress-step.active .step-label {
+            color: #3498db;
+        }
+        
+        .form-container {
+            padding: 25px;
+        }
+        
+        .form-step {
+            display: none;
+        }
+        
+        .form-step.active {
+            display: block;
+        }
+        
+        .form-step h2 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.6rem;
+        }
+        
+        .form-step p {
+            color: #7f8c8d;
+            margin-bottom: 20px;
+            font-size: 1.05rem;
+        }
+        
+        .search-box {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 14px 15px 14px 45px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+            transition: border-color 0.3s;
+        }
+        
+        .search-box input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 2px 8px rgba(52, 152, 219, 0.2);
+        }
+        
+        .search-box i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #95a5a6;
+        }
+        
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 25px;
+        }
+        
+        .category-card {
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: white;
+        }
+        
+        .category-card:hover {
+            border-color: #3498db;
+            box-shadow: 0 8px 16px rgba(52, 152, 219, 0.15);
+            transform: translateY(-3px);
+        }
+        
+        .category-card.selected {
+            border-color: #3498db;
+            background: #eaf2f8;
+            box-shadow: 0 8px 16px rgba(52, 152, 219, 0.15);
+        }
+        
+        .category-card h3 {
+            color: #2c3e50;
+            margin-bottom: 12px;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .category-card h3 i {
+            margin-right: 10px;
+            color: #3498db;
+        }
+        
+        .category-card ul {
+            list-style-type: none;
+            color: #5a6c7d;
+            padding-left: 5px;
+            font-size: 0.95rem;
+        }
+        
+        .category-card li {
+            margin-bottom: 6px;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .category-card li:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #3498db;
+            font-weight: bold;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .form-group input, 
+        .form-group textarea, 
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus, 
+        .form-group textarea:focus, 
+        .form-group select:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 2px 8px rgba(52, 152, 219, 0.2);
+        }
+        
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .map-container {
+            height: 250px;
+            background: #eee;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #7f8c8d;
+            font-weight: 500;
+        }
+        
+        .media-upload {
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 20px;
+            transition: border-color 0.3s;
+            cursor: pointer;
+        }
+        
+        .media-upload:hover {
+            border-color: #3498db;
+        }
+        
+        .media-upload i {
+            font-size: 2.5rem;
+            color: #3498db;
+            margin-bottom: 15px;
+        }
+        
+        .media-upload p {
+            margin-bottom: 0;
+        }
+        
+        .media-preview {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .media-item {
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            height: 150px;
+        }
+        
+        .media-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .media-item .remove {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(255, 255, 255, 0.8);
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+        
+        .review-item {
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .review-item h3 {
+            color: #2c3e50;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+        
+        .review-item p {
+            color: #5a6c7d;
+            margin-bottom: 0;
+        }
+        
+        .btn-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        button {
+            padding: 14px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+        }
+        
+        .btn-prev {
+            background: #ecf0f1;
+            color: #7f8c8d;
+        }
+        
+        .btn-prev:hover {
+            background: #dfe6e9;
+        }
+        
+        .btn-prev i {
+            margin-right: 8px;
+        }
+        
+        .btn-next {
+            background: #3498db;
+            color: white;
+        }
+        
+        .btn-next:hover {
+            background: #2980b9;
+        }
+        
+        .btn-next i {
+            margin-left: 8px;
+        }
+        
+        .btn-submit {
+            background: #2ecc71;
+            color: white;
+        }
+        
+        .btn-submit:hover {
+            background: #27ae60;
+        }
+        
+        .btn-submit i {
+            margin-left: 8px;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            background: #2ecc71;
+            color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transform: translateX(150%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .upload-success {
+            color: #27ae60;
+            font-weight: bold;
+            margin-top: 10px;
+            display: none;
+        }
+        
+        .upload-success.show {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @media (max-width: 768px) {
+            .category-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .progress-step .step-label {
+                font-size: 0.7rem;
+            }
+            
+            .progress-container {
+                margin: 30px 10px;
+            }
+            
+            .form-container {
+                padding: 20px;
+            }
+            
+            .media-preview {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            }
+            
+            .media-item {
+                height: 120px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Report Community Issue</h1>
+        </header>
+        
+        <div class="progress-container">
+            <div class="progress-bar"></div>
+            <div class="progress-fill" id="progressFill"></div>
+            <div class="progress-step active" id="step1">
+                <span class="step-label">Category</span>
+            </div>
+            <div class="progress-step" id="step2">
+                <span class="step-label">Location</span>
+            </div>
+            <div class="progress-step" id="step3">
+                <span class="step-label">Media</span>
+            </div>
+            <div class="progress-step" id="step4">
+                <span class="step-label">Details</span>
+            </div>
+            <div class="progress-step" id="step5">
+                <span class="step-label">Review</span>
+            </div>
+        </div>
+        
+        <div class="form-container">
+            <!-- Step 1: Category Selection -->
+            <div class="form-step active" id="categoryStep">
+                <h2>What type of issue are you reporting?</h2>
+                <p>Select the category that best describes your community issue. This helps us route your report to the right department.</p>
+                
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search categories..." id="searchInput">
+                </div>
+                
+                <div class="category-grid" id="categoryGrid">
+                    <div class="category-card" data-category="infrastructure">
+                        <h3><i class="fas fa-road"></i> Infrastructure</h3>
+                        <ul>
+                            <li>Roads, sidewalks, bridges, and public structures</li>
+                            <li>Potholes</li>
+                            <li>Broken sidewalks</li>
+                            <li>Bridge damage</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="category-card" data-category="environment">
+                        <h3><i class="fas fa-tree"></i> Environment</h3>
+                        <ul>
+                            <li>Parks, trees, waste management, and pollution</li>
+                            <li>Illegal dumping</li>
+                            <li>Tree maintenance</li>
+                            <li>Park issues</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="category-card" data-category="transportation">
+                        <h3><i class="fas fa-bus"></i> Transportation</h3>
+                        <ul>
+                            <li>Public transit, parking, and traffic management</li>
+                            <li>Bus stops</li>
+                            <li>Parking issues</li>
+                            <li>Traffic congestion</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="category-card" data-category="health">
+                        <h3><i class="fas fa-heartbeat"></i> Public Health</h3>
+                        <ul>
+                            <li>Sanitation, health hazards, and wellness</li>
+                            <li>Health hazards</li>
+                            <li>Sanitation</li>
+                            <li>Pest control</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="category-card" data-category="utilities">
+                        <h3><i class="fas fa-bolt"></i> Utilities</h3>
+                        <ul>
+                            <li>Water, electricity, gas, and telecommunications</li>
+                            <li>Power outages</li>
+                            <li>Water leaks</li>
+                            <li>Street lights</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="category-card" data-category="safety">
+                        <h3><i class="fas fa-shield-alt"></i> Public Safety</h3>
+                        <ul>
+                            <li>Traffic, security, emergency services</li>
+                            <li>Traffic signals</li>
+                            <li>Dangerous areas</li>
+                            <li>Emergency access</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="category-card" data-category="housing">
+                        <h3><i class="fas fa-home"></i> Housing & Buildings</h3>
+                        <ul>
+                            <li>Building codes, zoning, and housing issues</li>
+                            <li>Building violations</li>
+                            <li>Zoning issues</li>
+                            <li>Housing conditions</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="category-card" data-category="other">
+                        <h3><i class="fas fa-info-circle"></i> Other Issues</h3>
+                        <ul>
+                            <li>General community concerns and suggestions</li>
+                            <li>Community events</li>
+                            <li>General suggestions</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="btn-container">
+                    <button class="btn-prev" disabled><i class="fas fa-arrow-left"></i> Previous</button>
+                    <button class="btn-next" id="nextToLocation">Next <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </div>
+            
+            <!-- Step 2: Location -->
+            <div class="form-step" id="locationStep">
+                <h2>Where is the issue located?</h2>
+                <p>Please provide the location details so we can address the issue quickly.</p>
+                
+                <div class="map-container">
+                    <i class="fas fa-map-marker-alt" style="font-size: 3rem; margin-right: 15px;"></i>
+                    <p>Interactive Map Would Appear Here</p>
+                </div>
+                
+                <div class="form-group">
+                    <label for="address">Address</label>
+                    <input type="text" id="address" placeholder="Enter the address">
+                </div>
+                
+                <div class="form-group">
+                    <label for="landmark">Nearest Landmark</label>
+                    <input type="text" id="landmark" placeholder="Enter a nearby landmark">
+                </div>
+                
+                <div class="form-group">
+                    <label for="city">City</label>
+                    <input type="text" id="city" placeholder="Enter city">
+                </div>
+                
+                <div class="form-group">
+                    <label for="zipcode">ZIP Code</label>
+                    <input type="text" id="zipcode" placeholder="Enter ZIP code">
+                </div>
+                
+                <div class="btn-container">
+                    <button class="btn-prev" id="prevToCategory"><i class="fas fa-arrow-left"></i> Previous</button>
+                    <button class="btn-next" id="nextToMedia">Next <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </div>
+            
+            <!-- Step 3: Media -->
+            <div class="form-step" id="mediaStep">
+                <h2>Add Photos or Videos</h2>
+                <p>Visual evidence helps us understand the issue better. Upload photos or videos of the problem.</p>
+                
+                <!-- Hidden file input -->
+                <input type="file" id="mediaInput" accept="image/*,video/*" multiple style="display: none;" />
+
+                <div class="media-upload" id="mediaUpload">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <h3>Drag & Drop or Click to Upload</h3>
+                    <p>Upload up to 5 photos or a short video</p>
+                </div>
+
+                <!-- Success message (hidden by default) -->
+                <p id="uploadSuccess" class="upload-success">
+                    Media selected successfully ✅
+                </p>
+                
+                <div class="media-preview" id="mediaPreview">
+                    <!-- Media previews will be added here -->
+                    <p style="color: #aaa; text-align: center; width: 100%; margin-top: 50px;">
+                        No media selected yet. Click above to upload.
+                    </p>
+                </div>
+                
+                <div class="btn-container">
+                    <button class="btn-prev" id="prevToLocation"><i class="fas fa-arrow-left"></i> Previous</button>
+                    <button class="btn-next" id="nextToDetails">Next <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </div>
+            
+            <!-- Step 4: Details -->
+            <div class="form-step" id="detailsStep">
+                <h2>Describe the Issue</h2>
+                <p>Please provide detailed information about the issue you're reporting.</p>
+                
+                <div class="form-group">
+                    <label for="issueTitle">Issue Title</label>
+                    <input type="text" id="issueTitle" placeholder="Brief title for the issue">
+                </div>
+                
+                <div class="form-group">
+                    <label for="issueDescription">Description</label>
+                    <textarea id="issueDescription" placeholder="Please describe the issue in detail..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="urgency">Urgency Level</label>
+                    <select id="urgency">
+                        <option value="">Select urgency level</option>
+                        <option value="low">Low - Minor inconvenience</option>
+                        <option value="medium">Medium - Needs attention soon</option>
+                        <option value="high">High - Requires immediate action</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="contactEmail">Contact Email (optional)</label>
+                    <input type="email" id="contactEmail" placeholder="Enter your email for updates">
+                </div>
+                
+                <div class="btn-container">
+                    <button class="btn-prev" id="prevToMedia"><i class="fas fa-arrow-left"></i> Previous</button>
+                    <button class="btn-next" id="nextToReview">Next <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </div>
+            
+            <!-- Step 5: Review -->
+            <div class="form-step" id="reviewStep">
+                <h2>Review and Submit</h2>
+                <p>Please review all the information before submitting your report.</p>
+                
+                <div class="review-item">
+                    <h3>Category</h3>
+                    <p id="reviewCategory">Not selected</p>
+                </div>
+                
+                <div class="review-item">
+                    <h3>Location</h3>
+                    <p id="reviewLocation">Not provided</p>
+                </div>
+                
+                <div class="review-item">
+                    <h3>Media</h3>
+                    <p id="reviewMedia">No media uploaded</p>
+                </div>
+                
+                <div class="review-item">
+                    <h3>Issue Details</h3>
+                    <p id="reviewDetails">No details provided</p>
+                </div>
+                
+                <div class="btn-container">
+                    <button class="btn-prev" id="prevToDetails"><i class="fas fa-arrow-left"></i> Previous</button>
+                    <button class="btn-submit" id="submitReport">Submit Report <i class="fas fa-check"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i> <span id="notificationText"></span>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Elements
+            const progressFill = document.getElementById('progressFill');
+            const steps = document.querySelectorAll('.form-step');
+            const progressSteps = document.querySelectorAll('.progress-step');
+            const nextButtons = document.querySelectorAll('.btn-next');
+            const prevButtons = document.querySelectorAll('.btn-prev');
+            const categoryCards = document.querySelectorAll('.category-card');
+            const searchInput = document.getElementById('searchInput');
+            const notification = document.getElementById('notification');
+            const notificationText = document.getElementById('notificationText');
+            const mediaUpload = document.getElementById('mediaUpload');
+            const mediaInput = document.getElementById('mediaInput');
+            const mediaPreview = document.getElementById('mediaPreview');
+            const uploadSuccess = document.getElementById('uploadSuccess');
+            const submitButton = document.getElementById('submitReport');
+            
+            // Form data object
+            const formData = {
+                category: '',
+                address: '',
+                landmark: '',
+                city: '',
+                zipcode: '',
+                media: [],
+                title: '',
+                description: '',
+                urgency: '',
+                email: ''
+            };
+            
+            let currentStep = 0;
+            let filesSelected = false;
+            
+            // Initialize
+            updateProgress();
+            
+            // Category selection
+            categoryCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    categoryCards.forEach(c => c.classList.remove('selected'));
+                    card.classList.add('selected');
+                    formData.category = card.querySelector('h3').textContent;
+                    showNotification('Category selected successfully!');
+                });
+            });
+            
+            // Search functionality
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                
+                categoryCards.forEach(card => {
+                    const categoryText = card.textContent.toLowerCase();
+                    card.style.display = categoryText.includes(searchTerm) ? 'block' : 'none';
+                });
+            });
+            
+            // Media upload functionality
+            mediaUpload.addEventListener('click', () => {
+                mediaInput.click();
+            });
+
+            // When files selected
+            mediaInput.addEventListener('change', handleFiles);
+
+            // Drag & Drop functionality
+            mediaUpload.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                mediaUpload.classList.add("dragover");
+            });
+            
+            mediaUpload.addEventListener('dragleave', () => {
+                mediaUpload.classList.remove("dragover");
+            });
+            
+            mediaUpload.addEventListener('drop', (e) => {
+                e.preventDefault();
+                mediaUpload.classList.remove("dragover");
+                handleFiles({ target: { files: e.dataTransfer.files } });
+            });
+
+            // Handle uploaded files
+            function handleFiles(event) {
+                const files = event.target.files;
+                
+                // Check if files were actually selected
+                if (!files || files.length === 0) {
+                    // User canceled the file selection
+                    uploadSuccess.classList.remove("show");
+                    filesSelected = false;
+                    updateNextButtonState();
+                    return;
+                }
+                
+                if (files.length > 5) {
+                    alert("You can upload maximum 5 files!");
+                    uploadSuccess.classList.remove("show");
+                    filesSelected = false;
+                    updateNextButtonState();
+                    return;
+                }
+
+                // Clear the placeholder text
+                if (mediaPreview.querySelector('p')) {
+                    mediaPreview.innerHTML = "";
+                }
+
+                // Show success message only after file selection
+                uploadSuccess.classList.add("show");
+                filesSelected = true;
+                updateNextButtonState();
+
+                // Clear previous previews
+                mediaPreview.innerHTML = "";
+
+                // Reset formData media array
+                formData.media = [];
+
+                Array.from(files).forEach(file => {
+                    const reader = new FileReader();
+
+                    reader.onload = function(e) {
+                        let element;
+                        if (file.type.startsWith("image/")) {
+                            element = document.createElement("img");
+                            element.src = e.target.result;
+                            element.alt = "Uploaded image";
+                            element.style.width = "100%";
+                            element.style.height = "100%";
+                            element.style.objectFit = "cover";
+                        } else if (file.type.startsWith("video/")) {
+                            element = document.createElement("video");
+                            element.src = e.target.result;
+                            element.controls = true;
+                            element.style.width = "100%";
+                        }
+                        
+                        // Create a container for each media item
+                        const container = document.createElement("div");
+                        container.className = "media-item";
+                        container.style.position = "relative";
+                        
+                        // Add remove button
+                        const removeBtn = document.createElement("div");
+                        removeBtn.className = "remove";
+                        removeBtn.innerHTML = '<i class="fas fa-times"></i>';
+                        removeBtn.addEventListener('click', function(e) {
+                            e.stopPropagation();
+                            container.remove();
+                            // Update formData.media array
+                            const index = formData.media.indexOf(file);
+                            if (index > -1) {
+                                formData.media.splice(index, 1);
+                            }
+                            if (formData.media.length === 0) {
+                                filesSelected = false;
+                                uploadSuccess.classList.remove("show");
+                                updateNextButtonState();
+                            }
+                        });
+                        
+                        container.appendChild(element);
+                        container.appendChild(removeBtn);
+                        mediaPreview.appendChild(container);
+                        
+                        // Add to formData
+                        formData.media.push(file);
+                    };
+
+                    reader.readAsDataURL(file);
+                });
+            }
+
+            // Update Next button state based on whether files are selected
+            function updateNextButtonState() {
+                const nextToDetails = document.getElementById('nextToDetails');
+                if (filesSelected) {
+                    nextToDetails.disabled = false;
+                    nextToDetails.style.opacity = "1";
+                    nextToDetails.style.cursor = "pointer";
+                } else {
+                    nextToDetails.disabled = true;
+                    nextToDetails.style.opacity = "0.6";
+                    nextToDetails.style.cursor = "not-allowed";
+                }
+            }
+
+            // Initialize button state
+            updateNextButtonState();
+            
+            // Next button actions
+            document.getElementById('nextToLocation').addEventListener('click', () => {
+                if (formData.category) {
+                    showStep(1);
+                } else {
+                    showNotification('Please select a category first');
+                }
+            });
+            
+            document.getElementById('nextToMedia').addEventListener('click', () => {
+                formData.address = document.getElementById('address').value;
+                formData.landmark = document.getElementById('landmark').value;
+                formData.city = document.getElementById('city').value;
+                formData.zipcode = document.getElementById('zipcode').value;
+                
+                if (formData.address && formData.city) {
+                    showStep(2);
+                } else {
+                    showNotification('Please provide at least address and city');
+                }
+            });
+            
+            document.getElementById('nextToDetails').addEventListener('click', () => {
+                if (filesSelected) {
+                    showStep(3);
+                } else {
+                    showNotification('Please upload at least one photo');
+                }
+            });
+            
+            document.getElementById('nextToReview').addEventListener('click', () => {
+                formData.title = document.getElementById('issueTitle').value;
+                formData.description = document.getElementById('issueDescription').value;
+                formData.urgency = document.getElementById('urgency').value;
+                formData.email = document.getElementById('contactEmail').value;
+                
+                if (formData.title && formData.description) {
+                    updateReviewSection();
+                    showStep(4);
+                } else {
+                    showNotification('Please provide title and description');
+                }
+            });
+            
+            // Previous button actions
+            document.getElementById('prevToCategory').addEventListener('click', () => showStep(0));
+            document.getElementById('prevToLocation').addEventListener('click', () => showStep(1));
+            document.getElementById('prevToMedia').addEventListener('click', () => showStep(2));
+            document.getElementById('prevToDetails').addEventListener('click', () => showStep(3));
+            
+            // Submit button
+            document.getElementById("submitReport").addEventListener("click", function(e) {
+                e.preventDefault(); // prevent default action
+
+                alert("Issue submitted successfully! ✅");
+
+                // ✅ Redirect to Home page after submit
+                window.location.href = "index.html";
+            });
+
+            // Functions
+            function showStep(stepIndex) {
+                steps.forEach(step => step.classList.remove('active'));
+                steps[stepIndex].classList.add('active');
+                
+                progressSteps.forEach((step, index) => {
+                    if (index <= stepIndex) {
+                        step.classList.add('active');
+                    } else {
+                        step.classList.remove('active');
+                    }
+                });
+                
+                currentStep = stepIndex;
+                updateProgress();
+            }
+            
+            function updateProgress() {
+                const progressPercentage = (currentStep / (steps.length - 1)) * 100;
+                progressFill.style.width = `${progressPercentage}%`;
+            }
+            
+            function updateReviewSection() {
+                document.getElementById('reviewCategory').textContent = formData.category;
+                
+                const locationParts = [];
+                if (formData.address) locationParts.push(formData.address);
+                if (formData.landmark) locationParts.push(`Landmark: ${formData.landmark}`);
+                if (formData.city) locationParts.push(formData.city);
+                if (formData.zipcode) locationParts.push(formData.zipcode);
+                
+                document.getElementById('reviewLocation').textContent = 
+                    locationParts.length > 0 ? locationParts.join(', ') : 'Not provided';
+                
+                document.getElementById('reviewMedia').textContent = 
+                    formData.media.length > 0 ? `${formData.media.length} photo(s) uploaded` : 'No media uploaded';
+                
+                const detailsParts = [];
+                if (formData.title) detailsParts.push(`Title: ${formData.title}`);
+                if (formData.description) detailsParts.push(`Description: ${formData.description.substring(0, 100)}...`);
+                if (formData.urgency) detailsParts.push(`Urgency: ${formData.urgency}`);
+                
+                document.getElementById('reviewDetails').textContent = 
+                    detailsParts.length > 0 ? detailsParts.join('; ') : 'No details provided';
+            }
+            
+            function showNotification(message) {
+                notificationText.textContent = message;
+                notification.classList.add('show');
+                
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 3000);
+            }
+        });
+    </script>
+</body>
+</html>

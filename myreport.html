@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CFix - Community Profile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .active-tab {
+            background-color: #3b82f6;
+            color: white;
+        }
+        .sidebar-item.active {
+            background-color: #e0f2fe;
+            border-right: 4px solid #3b82f6;
+            color: #1e40af;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .sidebar {
+            transition: all 0.3s ease;
+            width: 256px; /* 64 * 4 = 256px for md:ml-64 */
+        }
+        .sidebar.collapsed {
+            width: 80px;
+        }
+        .sidebar.collapsed .sidebar-text {
+            display: none;
+        }
+        .sidebar.collapsed .user-info {
+            display: none;
+        }
+        .main-content {
+            transition: all 0.3s ease;
+        }
+        .badge {
+            transition: transform 0.2s;
+        }
+        .badge:hover {
+            transform: scale(1.05);
+        }
+        @media (max-width: 780px) {
+            .sidebar {
+                transform: translateX(-100%);
+                position: fixed;
+                z-index: 50;
+                height: 100vh;
+                width: 256px;
+            }
+            .sidebar.mobile-open {
+                transform: translateX(0);
+            }
+            .main-content {
+                margin-left: 0;
+            }
+            .overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: rgba(0, 0, 0, 0.5);
+                z-index: 40;
+            }
+            .overlay.active {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 flex">
+    <!-- Mobile Overlay -->
+    <div class="overlay" id="overlay"></div>
+    
+    <!-- Sidebar Navigation -->
+    <div class="sidebar bg-white h-screen shadow-md fixed md:relative z-50" id="sidebar">
+        <div class="p-4 border-b flex justify-between items-center">
+            <div class="flex items-center">
+                <img src="one.jpg" alt="Logo" class="h-8 mr-2 rounded-full">
+                <span class="font-bold text-lg text-blue-600 sidebar-text">CFix</span>
+            </div>
+            <button id="toggleSidebar" class="text-gray-500 hover:text-gray-700 md:block hidden">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        
+        <nav class="mt-6">
+            <ul>
+                <li class="mb-1">
+                    <a href="index.html" class="sidebar-item flex items-center px-6 py-3 text-gray-700 hover:bg-blue-50">
+                        <i class="fas fa-newspaper mr-3"></i>
+                        <span class="sidebar-text">Community Feed</span>
+                    </a>
+                </li>
+                <li class="mb-1">
+                    <a href="report.html" class="sidebar-item flex items-center px-6 py-3 text-gray-700 hover:bg-blue-50">
+                        <i class="fas fa-flag mr-3"></i>
+                        <span class="sidebar-text">Report Issue</span>
+                    </a>
+                </li>
+                <li class="mb-1">
+                    <a href="#" class="sidebar-item flex items-center px-6 py-3 text-gray-700 hover:bg-blue-50">
+                        <i class="fas fa-chart-line mr-3"></i>
+                        <span class="sidebar-text">Impact Dashboard</span>
+                    </a>
+                </li>
+                <li class="mb-1">
+                    <a href="authority.html" class="sidebar-item flex items-center px-6 py-3 text-gray-700 hover:bg-blue-50">
+                        <i class="fas fa-building mr-3"></i>
+                        <span class="sidebar-text">Authority Dashboard</span>
+                    </a>
+                </li>
+                <li class="mb-1">
+                    <a href="success.html" class="sidebar-item flex items-center px-6 py-3 text-gray-700 hover:bg-blue-50">
+                        <i class="fas fa-trophy mr-3"></i>
+                        <span class="sidebar-text">Success Stories</span>
+                    </a>
+                </li>
+                <li class="mb-1">
+                    <a href="#" class="sidebar-item active flex items-center px-6 py-3 text-blue-600 hover:bg-blue-50">
+                        <i class="fas fa-user-circle mr-3"></i>
+                        <span class="sidebar-text">Community Profile</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        
+        <div class="absolute bottom-0 w-full p-4 border-t user-info">
+            <div class="flex items-center">
+                <img src="https://i.pravatar.cc/40" alt="User" class="h-10 w-10 rounded-full mr-3">
+                <div class="sidebar-text">
+                    <p class="font-medium text-sm">Sarah Chen</p>
+                    <p class="text-xs text-gray-500">Civic Champion</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Profile Section -->
+    <div class="main-content flex-1 p-4 md:p-8 ml-0 md:ml-64 transition-all duration-300" id="mainContent">
+        <!-- Mobile Header with Hamburger -->
+        <div class="flex justify-between items-center mb-6 md:hidden">
+            <button id="mobileToggle" class="text-gray-700">
+                <i class="fas fa-bars text-xl"></i>
+            </button>
+            <h1 class="text-xl font-bold text-gray-800">Community Profile</h1>
+            <div class="w-8"></div> <!-- Spacer for balance -->
+        </div>
+        
+        <header class="mb-8 hidden md:block">
+            <h1 class="text-3xl font-bold text-gray-800">Community Profile – Your civic engagement journey and community impact</h1>
+        </header>
+        
+        <!-- Tabs -->
+        <div class="bg-white rounded-lg shadow mb-6 overflow-hidden">
+            <div class="flex overflow-x-auto">
+                <button class="tab-btn active-tab px-4 py-3 font-medium whitespace-nowrap" data-tab="overview">Overview</button>
+                <button class="tab-btn px-4 py-3 font-medium text-gray-600 hover:bg-gray-100 whitespace-nowrap" data-tab="activity">Activity</button>
+                <button class="tab-btn px-4 py-3 font-medium text-gray-600 hover:bg-gray-100 whitespace-nowrap" data-tab="achievements">Achievements</button>
+                <button class="tab-btn px-4 py-3 font-medium text-gray-600 hover:bg-gray-100 whitespace-nowrap" data-tab="privacy-settings">Privacy & Settings</button>
+            </div>
+        </div>
+        
+        <!-- Tab Content -->
+        <div id="tab-content">
+            <!-- Overview Tab -->
+            <div class="tab-content active" id="overview-content">
+                <div class="bg-white rounded-lg shadow p-6 mb-6">
+                    <div class="flex flex-col md:flex-row">
+                        <!-- Profile Picture and Basic Info -->
+                        <div class="md:w-1/3 flex flex-col items-center text-center mb-6 md:mb-0 md:border-r md:pr-6">
+                            <div class="relative mb-4">
+                                <img src="https://i.pravatar.cc/120" alt="Profile" class="h-32 w-32 rounded-full border-4 border-blue-100">
+                                <span class="absolute bottom-2 right-2 bg-blue-500 text-white rounded-full p-1">
+                                    <i class="fas fa-check text-xs"></i>
+                                </span>
+                            </div>
+                            <h2 class="text-2xl font-bold text-gray-800"><username class="index"></username></h2>
+                            <p class="text-blue-600 font-medium">Civic Champion</p>
+                            <p class="text-gray-600 flex items-center mt-1">
+                                <i class="fas fa-map-marker-alt mr-1 text-gray-400"></i>
+                                Downtown District
+                            </p>
+                            <p class="text-gray-500 text-sm mt-1">Member since September 2025</p>
+                            
+                            <!-- Action Buttons -->
+                            <div class="flex flex-wrap justify-center gap-2 mt-4">
+                                <button class="bg-blue-100 text-blue-600 px-3 py-2 rounded-lg text-sm font-medium hover:bg-blue-200">
+                                    <i class="fas fa-share-alt mr-1"></i> Share
+                                </button>
+                                <button class="bg-gray-100 text-gray-700 px-3 py-2 rounded-lg text-sm font-medium hover:bg-gray-200">
+                                    <i class="fas fa-user-plus mr-1"></i> Follow
+                                </button>
+                                <button class="bg-gray-100 text-gray-700 px-3 py-2 rounded-lg text-sm font-medium hover:bg-gray-200">
+                                    <i class="fas fa-edit mr-1"></i> Edit
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Stats and Description -->
+                        <div class="md:w-2/3 md:pl-6">
+                            <!-- Stats Section -->
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+                                <div class="bg-blue-50 p-4 rounded-lg text-center">
+                                    <p class="text-3xl font-bold text-blue-600">42</p>
+                                    <p class="text-gray-600">Reports</p>
+                                </div>
+                                <div class="bg-green-50 p-4 rounded-lg text-center">
+                                    <p class="text-3xl font-bold text-green-600">28</p>
+                                    <p class="text-gray-600">Resolved</p>
+                                </div>
+                                <div class="bg-purple-50 p-4 rounded-lg text-center">
+                                    <p class="text-3xl font-bold text-purple-600">1,250</p>
+                                    <p class="text-gray-600">Points</p>
+                                </div>
+                            </div>
+                            
+                            <!-- User Description -->
+                            <div class="mb-6">
+                                <h3 class="font-semibold text-gray-700 mb-2">About Me</h3>
+                                <p class="text-gray-600">Passionate about improving our community. I believe that small actions can lead to big changes. Through CFix, I've helped resolve 28 civic issues in our neighborhood and continue to advocate for better public services and infrastructure.</p>
+                            </div>
+                            
+                            <!-- Level Progress Bar -->
+                            <div>
+                                <div class="flex justify-between mb-2">
+                                    <span class="font-medium text-gray-700">Civic Champion – Level 3</span>
+                                    <span class="text-sm text-gray-500">65% to Level 4</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-3">
+                                    <div class="bg-gradient-to-r from-blue-400 to-purple-500 h-3 rounded-full" style="width: 65%"></div>
+                                </div>
+                                <div class="flex justify-between mt-1">
+                                    <span class="text-xs text-gray-500">1,250 points</span>
+                                    <span class="text-xs text-gray-500">1,920 points needed for Level 4</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Activity Tab -->
+            <div class="tab-content" id="activity-content">
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">Recent Activity</h3>
+                    
+                    <div class="space-y-4">
+                        <div class="flex items-start border-b pb-4">
+                            <div class="bg-green-100 p-2 rounded-full mr-4">
+                                <i class="fas fa-check text-green-600"></i>
+                            </div>
+                            <div>
+                                <p class="font-medium">Report resolved: Pothole on Main Street</p>
+                                <p class="text-gray-600 text-sm">Your report was marked as resolved by the Public Works Department.</p>
+                                <p class="text-gray-500 text-xs mt-1">2 days ago</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start border-b pb-4">
+                            <div class="bg-blue-100 p-2 rounded-full mr-4">
+                                <i class="fas fa-plus text-blue-600"></i>
+                            </div>
+                            <div>
+                                <p class="font-medium">New report: Broken streetlight on Oak Avenue</p>
+                                <p class="text-gray-600 text-sm">You reported a broken streetlight near the community park.</p>
+                                <p class="text-gray-500 text-xs mt-1">5 days ago</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start border-b pb-4">
+                            <div class="bg-yellow-100 p-2 rounded-full mr-4">
+                                <i class="fas fa-clock text-yellow-600"></i>
+                            </div>
+                            <div>
+                                <p class="font-medium">Garbage not collected in Sector 15</p>
+                                <p class="text-gray-600 text-sm">Report submitted to Municipal Corporation. Status: In Progress</p>
+                                <p class="text-gray-500 text-xs mt-1">1 week ago</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <div class="bg-red-100 p-2 rounded-full mr-4">
+                                <i class="fas fa-exclamation-triangle text-red-600"></i>
+                            </div>
+                            <div>
+                                <p class="font-medium">Water logging issue during rains</p>
+                                <p class="text-gray-600 text-sm">Reported drainage problem in your locality. Status: Pending</p>
+                                <p class="text-gray-500 text-xs mt-1">2 weeks ago</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Achievements Tab -->
+            <div class="tab-content" id="achievements-content">
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">Your Achievements</h3>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="border rounded-lg p-4 text-center badge">
+                            <div class="bg-yellow-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-3">
+                                <i class="fas fa-trophy text-yellow-600 text-2xl"></i>
+                            </div>
+                            <h4 class="font-bold text-lg">Civic Champion</h4>
+                            <p class="text-gray-600 text-sm mt-1">Resolved 25+ community issues</p>
+                            <span class="inline-block bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full mt-2">Earned</span>
+                        </div>
+                        
+                        <div class="border rounded-lg p-4 text-center badge">
+                            <div class="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-3">
+                                <i class="fas fa-flag text-blue-600 text-2xl"></i>
+                            </div>
+                            <h4 class="font-bold text-lg">Top Reporter</h4>
+                            <p class="text-gray-600 text-sm mt-1">Submitted 30+ reports</p>
+                            <span class="inline-block bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full mt-2">Earned</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Privacy & Settings Tab -->
+            <div class="tab-content" id="privacy-settings-content">
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">Privacy & Settings</h3>
+                    
+                    <div class="space-y-6">
+                        <div>
+                            <h4 class="font-semibold text-gray-700 mb-3">Profile Settings</h4>
+                            <div class="space-y-4">
+                                <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b pb-4">
+                                    <div>
+                                        <p class="font-medium">Edit Profile Information</p>
+                                        <p class="text-gray-600 text-sm">Update your name, bio, and other personal details</p>
+                                    </div>
+                                    <button class="bg-blue-100 text-blue-600 px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-200 mt-2 sm:mt-0">
+                                        Edit Profile
+                                    </button>
+                                </div>
+                                
+                                <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b pb-4">
+                                    <div>
+                                        <p class="font-medium">Change Password</p>
+                                        <p class="text-gray-600 text-sm">Update your login password</p>
+                                    </div>
+                                    <button class="bg-gray-100 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-200 mt-2 sm:mt-0">
+                                        Change Password
+                                    </button>
+                                </div>
+                                
+                                <div class="flex flex-col sm:flex-row sm:items-center justify-between">
+                                    <div>
+                                        <p class="font-medium">Profile Visibility</p>
+                                        <p class="text-gray-600 text-sm">Control who can see your profile and activity</p>
+                                    </div>
+                                    <div class="flex items-center mt-2 sm:mt-0">
+                                        <span class="text-sm text-gray-600 mr-2">Public</span>
+                                        <div class="relative inline-block w-12 h-6 rounded-full bg-blue-500">
+                                            <input type="checkbox" class="absolute w-12 h-6 opacity-0 z-10 cursor-pointer">
+                                            <span class="absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform duration-200"></span>
+                                        </div>
+                                        <span class="text-sm text-gray-600 ml-2">Private</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-semibold text-gray-700 mb-3">Notification Preferences</h4>
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between">
+                                    <span>Email Notifications</span>
+                                    <div class="relative inline-block w-12 h-6 rounded-full bg-gray-300">
+                                        <input type="checkbox" class="absolute w-12 h-6 opacity-0 z-10 cursor-pointer" checked>
+                                        <span class="absolute right-1 top-1 bg-white w-4 h-4 rounded-full transition-transform duration-200"></span>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-center justify-between">
+                                    <span>Push Notifications</span>
+                                    <div class="relative inline-block w-12 h-6 rounded-full bg-gray-300">
+                                        <input type="checkbox" class="absolute w-12 h-6 opacity-0 z-10 cursor-pointer" checked>
+                                        <span class="absolute right-1 top-1 bg-white w-4 h-4 rounded-full transition-transform duration-200"></span>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-center justify-between">
+                                    <span>Report Status Updates</span>
+                                    <div class="relative inline-block w-12 h-6 rounded-full bg-blue-500">
+                                        <input type="checkbox" class="absolute w-12 h-6 opacity-0 z-10 cursor-pointer" checked>
+                                        <span class="absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform duration-200"></span>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-center justify-between">
+                                    <span>Community Announcements</span>
+                                    <div class="relative inline-block w-12 h-6 rounded-full bg-blue-500">
+                                        <input type="checkbox" class="absolute w-12 h-6 opacity-0 z-10 cursor-pointer">
+                                        <span class="absolute right-1 top-1 bg-white w-4 h-4 rounded-full transition-transform duration-200"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-semibold text-gray-700 mb-3">Account Management</h4>
+                            <div class="space-y-3">
+                                <button class="w-full text-left py-2 px-3 hover:bg-gray-100 rounded text-red-600">
+                                    <i class="fas fa-download mr-2"></i>Download My Data
+                                </button>
+                                <button class="w-full text-left py-2 px-3 hover:bg-gray-100 rounded text-red-600">
+                                    <i class="fas fa-ban mr-2"></i>Deactivate Account
+                                </button>
+                                <button class="w-full text-left py-2 px-3 hover:bg-gray-100 rounded text-red-600">
+                                    <i class="fas fa-trash-alt mr-2"></i>Delete Account
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab switching functionality
+        document.querySelectorAll('.tab-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const tabId = this.getAttribute('data-tab');
+                
+                // Remove active class from all tabs
+                document.querySelectorAll('.tab-btn').forEach(btn => {
+                    btn.classList.remove('active-tab');
+                    btn.classList.add('text-gray-600');
+                });
+                
+                // Add active class to clicked tab
+                this.classList.add('active-tab');
+                this.classList.remove('text-gray-600');
+                
+                // Hide all tab content
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                
+                // Show selected tab content
+                document.getElementById(`${tabId}-content`).classList.add('active');
+            });
+        });
+        
+        // Sidebar collapse/expand functionality
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('mainContent');
+        const toggleSidebar = document.getElementById('toggleSidebar');
+        const mobileToggle = document.getElementById('mobileToggle');
+        const overlay = document.getElementById('overlay');
+        
+        // Desktop toggle
+        if (toggleSidebar) {
+            toggleSidebar.addEventListener('click', function() {
+                sidebar.classList.toggle('collapsed');
+                if (sidebar.classList.contains('collapsed')) {
+                    mainContent.classList.remove('md:ml-64');
+                    mainContent.classList.add('md:ml-20');
+                } else {
+                    mainContent.classList.remove('md:ml-20');
+                    mainContent.classList.add('md:ml-64');
+                }
+            });
+        }
+        
+        // Mobile toggle
+        if (mobileToggle) {
+            mobileToggle.addEventListener('click', function() {
+                sidebar.classList.toggle('mobile-open');
+                overlay.classList.toggle('active');
+            });
+        }
+        
+        // Close sidebar when clicking on overlay
+        if (overlay) {
+            overlay.addEventListener('click', function() {
+                sidebar.classList.remove('mobile-open');
+                overlay.classList.remove('active');
+            });
+        }
+        
+        // Toggle switches functionality
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const slider = this.parentElement;
+                if (this.checked) {
+                    slider.classList.remove('bg-gray-300');
+                    slider.classList.add('bg-blue-500');
+                    slider.querySelector('span').style.transform = 'translateX(24px)';
+                } else {
+                    slider.classList.remove('bg-blue-500');
+                    slider.classList.add('bg-gray-300');
+                    slider.querySelector('span').style.transform = 'translateX(0)';
+                }
+            });
+            
+            // Initialize switch positions
+            const slider = checkbox.parentElement;
+            if (checkbox.checked) {
+                slider.classList.add('bg-blue-500');
+                slider.querySelector('span').style.transform = 'translateX(24px)';
+            } else {
+                slider.classList.add('bg-gray-300');
+            }
+        });
+    </script>
+</body>
+</html>
